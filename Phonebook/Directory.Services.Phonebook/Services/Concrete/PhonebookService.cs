@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Directory.Core.Dtos;
+using Directory.Core.Domain.Dtos;
+using Directory.Core.Domain.Enums;
+using Directory.Core.Messages.DataCapture;
 using Directory.Services.Phonebook.Dtos.Contact;
 using Directory.Services.Phonebook.Dtos.Phonebook;
 using Directory.Services.Phonebook.Models;
 using Directory.Services.Phonebook.Services.Abstract;
 using Directory.Services.Phonebook.Settings.Abstract;
+using MassTransit;
 using MongoDB.Driver;
+using Contact = Directory.Services.Phonebook.Models.Contact;
 
 namespace Directory.Services.Phonebook.Services.Concrete
 {
     public class PhonebookService : IPhonebookService
     {
         private readonly IMongoCollection<Models.Phonebook> _phonebookCollection;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
         private readonly IMapper _mapper;
 
-        public PhonebookService(IMapper mapper, IDatabaseSettings databaseSettings)
+        public PhonebookService(IMapper mapper, IDatabaseSettings databaseSettings, ISendEndpointProvider sendEndpointProvider)
         {
 
             var client = new MongoClient(databaseSettings.ConnectionString);
@@ -26,9 +31,10 @@ namespace Directory.Services.Phonebook.Services.Concrete
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             _phonebookCollection = database.GetCollection<Models.Phonebook>(databaseSettings.PhonebookCollectionName);
             _mapper = mapper;
+            _sendEndpointProvider = sendEndpointProvider;
         }
 
-        public async Task<Response<PhonebookDto>> CreateAsync(PhonebookCreateDto phonebookCreateDto)
+        public async Task<Core.Domain.Dtos.Response<PhonebookDto>> CreateAsync(PhonebookCreateDto phonebookCreateDto)
         {
             var newPhonebook = _mapper.Map<Models.Phonebook>(phonebookCreateDto);
 
@@ -45,29 +51,32 @@ namespace Directory.Services.Phonebook.Services.Concrete
             }
 
             await _phonebookCollection.InsertOneAsync(newPhonebook);
+            await SendToQueueForCopy(newPhonebook,ModiTypes.Create);
 
-            return Response<PhonebookDto>.Success(_mapper.Map<PhonebookDto>(newPhonebook), 200);
+            return Core.Domain.Dtos.Response<PhonebookDto>.Success(_mapper.Map<PhonebookDto>(newPhonebook), 200);
         }
 
-        public async Task<Response<NoContent>> DeleteAsync(Guid id)
+        public async Task<Core.Domain.Dtos.Response<NoContent>> DeleteAsync(Guid id)
         {
             var result = await _phonebookCollection.DeleteOneAsync(x => x.Id == id);
 
             if (result.DeletedCount > 0)
             {
-                return Response<NoContent>.Success(204);
+
+                await SendToQueueForCopy(new Models.Phonebook() {Id = id},ModiTypes.Delete);
+                return Core.Domain.Dtos.Response<NoContent>.Success(200);
             }
-            return Response<NoContent>.Fail("Phonebook not found", 404);
+            return Core.Domain.Dtos.Response<NoContent>.Fail("Phonebook not found", 404);
 
         }
 
-        public async Task<Response<PhonebookDetailDto>> AddNewContactAsync(ContactInsertDto contactInsetDto)
+        public async Task<Core.Domain.Dtos.Response<PhonebookDetailDto>> AddNewContactAsync(ContactInsertDto contactInsetDto)
         {
 
             var phonebook = await _phonebookCollection.Find(x => x.Id == contactInsetDto.PhonebookId).FirstOrDefaultAsync();
             if (phonebook == null)
             {
-                return Response<PhonebookDetailDto>.Fail("Phonebook not found", 404);
+                return Core.Domain.Dtos.Response<PhonebookDetailDto>.Fail("Phonebook not found", 404);
             }
 
             var checkContactExists = phonebook.Contacts.Any(
@@ -76,7 +85,7 @@ namespace Directory.Services.Phonebook.Services.Concrete
             );
             if (checkContactExists)
             {
-                return Response<PhonebookDetailDto>.Fail("Contact already exists", 400);
+                return Core.Domain.Dtos.Response<PhonebookDetailDto>.Fail("Contact already exists", 400);
 
             }
 
@@ -89,21 +98,21 @@ namespace Directory.Services.Phonebook.Services.Concrete
             var update = Builders<Models.Phonebook>.Update.Push(x => x.Contacts, newContact);
             await _phonebookCollection.FindOneAndUpdateAsync(filter, update);
 
-            return Response<PhonebookDetailDto>.Success(_mapper.Map<PhonebookDetailDto>(phonebook), 200);
+            await SendToQueueForCopy(phonebook, ModiTypes.Update);
+            return Core.Domain.Dtos.Response<PhonebookDetailDto>.Success(_mapper.Map<PhonebookDetailDto>(phonebook), 200);
 
         }
 
-        public async Task<Response<PhonebookDetailDto>> DeleteContactAsync(ContactDeleteDto contactDeleteDto)
+        public async Task<Core.Domain.Dtos.Response<PhonebookDetailDto>> DeleteContactAsync(ContactDeleteDto contactDeleteDto)
         {
 
-            var record = await _phonebookCollection.Find(x =>
+            var phonebook = await _phonebookCollection.Find(x =>
                 x.Id == contactDeleteDto.PhonebookId && x.Contacts.Any(y => y.Id == contactDeleteDto.ContactId)).FirstOrDefaultAsync();
 
-            if (record == null)
+            if (phonebook == null)
             {
-                return Response<PhonebookDetailDto>.Fail("Phonebook not found", 404);
+                return Core.Domain.Dtos.Response<PhonebookDetailDto>.Fail("Phonebook not found", 404);
             }
-
 
             var filter = Builders<Models.Phonebook>.Filter.Where(x => x.Id == contactDeleteDto.PhonebookId);
             var update = Builders<Models.Phonebook>.Update.PullFilter(x => x.Contacts,
@@ -111,11 +120,15 @@ namespace Directory.Services.Phonebook.Services.Concrete
 
             await _phonebookCollection.UpdateOneAsync(filter, update);
 
-            return Response<PhonebookDetailDto>.Success(200);
+            phonebook.Contacts = phonebook.Contacts.Where(x => x.Id != contactDeleteDto.ContactId).ToList();
+
+            await SendToQueueForCopy(phonebook, ModiTypes.Update);
+
+            return Core.Domain.Dtos.Response<PhonebookDetailDto>.Success(200);
 
         }
 
-        public async Task<Response<List<PhonebookDto>>> GetAllAsync()
+        public async Task<Core.Domain.Dtos.Response<List<PhonebookDto>>> GetAllAsync()
         {
             var phonebooks = await _phonebookCollection.Find(phonebook => true).ToListAsync();
 
@@ -124,11 +137,11 @@ namespace Directory.Services.Phonebook.Services.Concrete
                 phonebooks = new List<Models.Phonebook>();
             }
 
-            return Response<List<PhonebookDto>>.Success(_mapper.Map<List<PhonebookDto>>(phonebooks), 200);
+            return Core.Domain.Dtos.Response<List<PhonebookDto>>.Success(_mapper.Map<List<PhonebookDto>>(phonebooks), 200);
 
         }
 
-        public async Task<Response<List<PhonebookDetailDto>>> GetAllWithDetailAsync()
+        public async Task<Core.Domain.Dtos.Response<List<PhonebookDetailDto>>> GetAllWithDetailAsync()
         {
             var phonebooks = await _phonebookCollection.Find(phonebook => true).ToListAsync();
 
@@ -137,26 +150,43 @@ namespace Directory.Services.Phonebook.Services.Concrete
                 phonebooks = new List<Models.Phonebook>();
             }
 
-            return Response<List<PhonebookDetailDto>>.Success(_mapper.Map<List<PhonebookDetailDto>>(phonebooks), 200);
+            return Core.Domain.Dtos.Response<List<PhonebookDetailDto>>.Success(_mapper.Map<List<PhonebookDetailDto>>(phonebooks), 200);
 
         }
 
-        public async Task<Response<PhonebookDto>> GetByIdAsync(Guid id)
+        public async Task<Core.Domain.Dtos.Response<PhonebookDto>> GetByIdAsync(Guid id)
         {
             var phonebook = await _phonebookCollection.Find<Models.Phonebook>(x => x.Id == id).FirstOrDefaultAsync();
 
             return phonebook == null
-                ? Response<PhonebookDto>.Fail("Phonebook not found", 404)
-                : Response<PhonebookDto>.Success(_mapper.Map<PhonebookDto>(phonebook), 200);
+                ? Core.Domain.Dtos.Response<PhonebookDto>.Fail("Phonebook not found", 404)
+                : Core.Domain.Dtos.Response<PhonebookDto>.Success(_mapper.Map<PhonebookDto>(phonebook), 200);
         }
 
-        public async Task<Response<PhonebookDetailDto>> GetWithDetailByIdAsync(Guid id)
+        public async Task<Core.Domain.Dtos.Response<PhonebookDetailDto>> GetWithDetailByIdAsync(Guid id)
         {
             var phonebook = await _phonebookCollection.Find<Models.Phonebook>(x => x.Id == id).FirstOrDefaultAsync();
 
             return phonebook == null
-                ? Response<PhonebookDetailDto>.Fail("Phonebook not found", 404)
-                : Response<PhonebookDetailDto>.Success(_mapper.Map<PhonebookDetailDto>(phonebook), 200);
+                ? Core.Domain.Dtos.Response<PhonebookDetailDto>.Fail("Phonebook not found", 404)
+                : Core.Domain.Dtos.Response<PhonebookDetailDto>.Success(_mapper.Map<PhonebookDetailDto>(phonebook), 200);
         }
+
+        #region Private Functions
+
+        private async Task SendToQueueForCopy(Models.Phonebook phonebook,ModiTypes modiType)
+        {
+            var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:snap-phonebook"));
+
+            var snapPhonebookMessageCommand = new SnapPhonebookMessageCommand();
+
+            snapPhonebookMessageCommand = _mapper.Map<Models.Phonebook, SnapPhonebookMessageCommand>(phonebook);
+
+            snapPhonebookMessageCommand.Modification = (int)modiType;
+
+            await sendEndPoint.Send<SnapPhonebookMessageCommand>(snapPhonebookMessageCommand);
+        }
+
+        #endregion
     }
 }

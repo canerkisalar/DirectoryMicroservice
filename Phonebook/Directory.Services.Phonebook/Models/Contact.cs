@@ -13,5 +13,6 @@ namespace Directory.Services.Phonebook.Models
         public Guid Id { get; set; } 
         public string ContactType { get; set; }
         public string ContactInformation { get; set; }
+
     }
 }

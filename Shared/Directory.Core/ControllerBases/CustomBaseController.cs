@@ -1,4 +1,4 @@
-﻿using Directory.Core.Dtos;
+﻿using Directory.Core.Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Directory.Core.ControllerBases

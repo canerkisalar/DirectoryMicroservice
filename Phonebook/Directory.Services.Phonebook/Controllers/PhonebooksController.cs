@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Directory.Core.ControllerBases;
+using Directory.Core.Messages.DataCapture;
 using Directory.Services.Phonebook.Dtos.Contact;
 using Directory.Services.Phonebook.Dtos.Phonebook;
 using Directory.Services.Phonebook.Services.Abstract;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Directory.Services.Phonebook.Controllers
@@ -13,10 +16,10 @@ namespace Directory.Services.Phonebook.Controllers
     public class PhonebooksController : CustomBaseController
     {
         private readonly IPhonebookService _phonebookService;
-
         public PhonebooksController(IPhonebookService phonebookService)
         {
             _phonebookService = phonebookService;
+        
         }
 
         [HttpGet]

@@ -11,11 +11,11 @@ namespace Directory.Services.Phonebook.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.String)]
-        public Guid Id { get; set; } 
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Company { get; set; }
-        public List<Contact> Contacts { get; set; }
+            public Guid Id { get; set; } 
+            public string Name { get; set; }
+            public string Surname { get; set; }
+            public string Company { get; set; }
+            public List<Contact> Contacts { get; set; }
 
     }
 }

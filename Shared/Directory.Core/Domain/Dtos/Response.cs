@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Directory.Core.Dtos
+namespace Directory.Core.Domain.Dtos
 {
     public class Response<T>
     {

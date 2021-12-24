@@ -1,4 +1,4 @@
-﻿namespace Directory.Core.Dtos
+﻿namespace Directory.Core.Domain.Dtos
 {
     public class NoContent
     {

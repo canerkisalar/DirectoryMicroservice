@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Directory.Core.Dtos;
+using Directory.Core.Domain.Dtos;
 using Directory.Services.Phonebook.Dtos.Contact;
 using Directory.Services.Phonebook.Dtos.Phonebook;
 
