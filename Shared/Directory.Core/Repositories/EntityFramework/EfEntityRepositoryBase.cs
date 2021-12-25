@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Directory.Core.Domain;
 using Microsoft.EntityFrameworkCore;
+using Phonebook.Core.Domain;
 
-namespace Directory.Core.Repositories.EntityFramework
+namespace Phonebook.Core.Repositories.EntityFramework
 {
     public class EfEntityRepositoryBase<TEntity, TContext> : IEntityRepository<TEntity>
         where TEntity : class, IEntity, new()

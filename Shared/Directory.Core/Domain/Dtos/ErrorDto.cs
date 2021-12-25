@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Directory.Core.Domain.Dtos
+namespace Phonebook.Core.Domain.Dtos
 {
     public class ErrorDto
     {

@@ -1,3 +1,6 @@
+
+Gateway					=> 5000
 Ports:
-	-Phonebook => 5010
+	-Phonebook			=> 5010
+	-Report				=> 5020
 	-DataCaptureService => 5099

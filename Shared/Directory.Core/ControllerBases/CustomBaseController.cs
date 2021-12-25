@@ -1,7 +1,7 @@
-﻿using Directory.Core.Domain.Dtos;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Phonebook.Core.Domain.Dtos;
 
-namespace Directory.Core.ControllerBases
+namespace Phonebook.Core.ControllerBases
 {
     public class CustomBaseController : ControllerBase
     {

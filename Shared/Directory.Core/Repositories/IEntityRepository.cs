@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Directory.Core.Domain;
+using Phonebook.Core.Domain;
 
-namespace Directory.Core.Repositories
+namespace Phonebook.Core.Repositories
 {
     public interface IEntityRepository<TEntity> where TEntity : class, IEntity,new()
     {

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Directory.Core.Domain;
+using Phonebook.Core.Domain;
 
-namespace Directory.Core.Messages.DataCapture
+namespace Phonebook.Core.Messages.DataCapture
 {
     public class SnapPhonebookMessageCommand
     {
