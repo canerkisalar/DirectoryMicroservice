@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  phonebookdb:
+    container_name: phonebookdb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - phonebookdb_volume:/data/db
+  reportdb:
+    container_name: reportdb
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - reportdb_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=phonebook
+      - POSTGRES_PASSWORD=*Password12*
+      - POSTGRES_DB=phonebook
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  phonebook.api:
+    container_name: phonebook.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DEVELOPMENT
+      - RabbitMQUrl=rabbitmq
+      - DatabaseSettings:ConnectionString=mongodb://phonebookdb:27017
+    ports:
+      - "5010:80"
+    depends_on:
+      - phonebookdb
+  datacapture.api:
+    container_name: datacapture.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DEVELOPMENT
+      - RabbitMQUrl=rabbitmq
+      - ConnectionString=User ID=phonebook;Password=*Password12*;Server=localhost;Database=phonebook;Integrated Security=true;Pooling=true;
+    ports:
+      - "5099:80"
+    depends_on:
+      - reportdb  
+  report.api:
+    container_name: report.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DEVELOPMENT
+      - RabbitMQUrl=rabbitmq
+      - ConnectionString=User ID=phonebook;Password=*Password12*;Server=localhost;Database=phonebook;Integrated Security=true;Pooling=true;
+    ports:
+      - "5020:80"
+    depends_on:
+      - reportdb  
+  gateway.api:
+    container_name: gateway.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Services:phonebook:DownstreamPath=http://phonebook.api
+      - Services:report:DownstreamPath=http://report.api
+    ports:
+      - "5000:80"
+      

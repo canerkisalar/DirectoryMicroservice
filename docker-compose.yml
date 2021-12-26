@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  phonebookdb:
+    image: mongo
+  reportdb:
+    image: postgres
+  rabbitmq:
+    image: rabbitmq:3.9.11-management
+  phonebook.api:
+    image: phonebook_api_image  
+    build: 
+      context: .
+      dockerfile: Services/Phonebook/Directory.Services.Phonebook/Dockerfile
+  datacapture.api:
+    image: datacapture_api_image  
+    build: 
+      context: .
+      dockerfile: Services/DataCapture/Directory.Services.DataCaptureService/Dockerfile
+  report.api:
+    image: report_api_image  
+    build: 
+      context: .
+      dockerfile: Services/Report/Phonebook.Services.Report/Dockerfile
+  gateway.api:
+    image: gateway_api_image
+    build:
+      context: .
+      dockerfile: Gateways/Phonebook.Gateway/Dockerfile        
+volumes:
+  phonebookdb_volume:
+  reportdb_volume:
+

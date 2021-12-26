@@ -27,7 +27,7 @@ namespace Phonebook.Services.Phonebook.Services.Concrete
         {
 
             var client = new MongoClient(databaseSettings.ConnectionString);
-            MongoDefaults.GuidRepresentation = MongoDB.Bson.GuidRepresentation.Standard;
+            //MongoDefaults.GuidRepresentation = MongoDB.Bson.GuidRepresentation.Standard;
             var database = client.GetDatabase(databaseSettings.DatabaseName);
             _phonebookCollection = database.GetCollection<Models.Phonebook>(databaseSettings.PhonebookCollectionName);
             _mapper = mapper;

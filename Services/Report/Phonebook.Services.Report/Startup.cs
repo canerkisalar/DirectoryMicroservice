@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Phonebook.Services.Report.Consumers;
 using Phonebook.Services.Report.Infrastructure.Abstract;
 using Phonebook.Services.Report.Infrastructure.Abstract.Report;
@@ -60,11 +61,17 @@ namespace Phonebook.Services.Report
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Phonebook.Services.Report", Version = "v1" });
             });
+
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var client = new Context())
+            {
+                client.Database.EnsureCreated();
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -12,7 +12,7 @@
       "UpstreamPathTemplate": "/services/phonebook/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "UpstreamScheme": "http",
-      "ServiceName": "phonebook",
+      "ServiceName": "phonebook.api",
       "SwaggerKey": "phonebook"
 
     }
