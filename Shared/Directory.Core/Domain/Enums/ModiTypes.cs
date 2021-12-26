@@ -1,5 +1,4 @@
-﻿
-namespace Phonebook.Core.Domain.Enums
+﻿namespace Phonebook.Core.Domain.Enums
 {
     public enum ModiTypes
     {

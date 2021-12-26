@@ -56,7 +56,7 @@ namespace Phonebook.Services.Report.Services.Concrete
 
                 if (getDataRequest.IsSuccessful)
                 {
-                    return Core.Domain.Dtos.Response<ReportHead>.Success(200);
+                    return Core.Domain.Dtos.Response<ReportHead>.Success(newReportRequest,200);
                 }
             }
             return Core.Domain.Dtos.Response<ReportHead>.Fail("Something goes wrong", 500);
@@ -99,7 +99,7 @@ namespace Phonebook.Services.Report.Services.Concrete
             return Core.Domain.Dtos.Response<GetAllPhonebooksMessageCommand>.Success(200);
         }
 
-        public async Task PrepLocationReport(AllPhonebooksMessageCommand context, SourceTypes sourceType, List<Models.Phonebook> dataFromDb = null)
+        public async Task PrepLocationReport(SourceTypes sourceType, AllPhonebooksMessageCommand context = null, List<Models.Phonebook> dataFromDb = null)
         {
 
             var phonebooks = new List<Models.Phonebook>();
@@ -116,6 +116,8 @@ namespace Phonebook.Services.Report.Services.Concrete
                 case SourceTypes.FromOwnDb:
                     phonebooks = dataFromDb;
                     break;
+
+
             }
 
             if (phonebooks is { Count: 0 })

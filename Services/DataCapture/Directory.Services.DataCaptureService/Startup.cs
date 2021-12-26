@@ -8,9 +8,12 @@ using Microsoft.OpenApi.Models;
 using Phonebook.Services.DataCapture.Consumers;
 using Phonebook.Services.DataCapture.Infrastructure.Abstact;
 using Phonebook.Services.DataCapture.Infrastructure.Concrete.EntityFramework;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Phonebook.Services.DataCapture
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)

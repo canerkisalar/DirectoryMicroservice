@@ -4,8 +4,10 @@ using Phonebook.Services.DataCapture.Infrastructure.Abstact;
 
 namespace Phonebook.Services.DataCapture.Infrastructure.Concrete.EntityFramework
 {
-    public class EfContactDal : EfEntityRepositoryBase<Contact,Context>,IContactDal
-
+    public class EfContactDal : EfEntityRepositoryBase<Contact, Context>, IContactDal
     {
+        public EfContactDal(Context context) : base(context)
+        {
+        }
     }
 }

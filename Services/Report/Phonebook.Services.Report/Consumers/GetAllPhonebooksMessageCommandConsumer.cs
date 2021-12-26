@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿
+
+using System.Threading.Tasks;
 using MassTransit;
 using Phonebook.Core.Messages.Report;
 using Phonebook.Services.Report.Enums;
@@ -26,7 +28,7 @@ namespace Phonebook.Services.Report.Consumers
         {
             if (context.Message.PhonebookAllData != null)
             {
-                await _reportService.PrepLocationReport(context.Message,SourceTypes.FromMessageQueue);
+                await _reportService.PrepLocationReport(SourceTypes.FromMessageQueue, context.Message);
             }
             //if (allData != null)
             //{

@@ -26,6 +26,13 @@ namespace Phonebook.Services.Report.Infrastructure.Concrete.EntityFramework
         {
 
         }
+        public Context()
+        {
+        }
+
+        public Context(DbContextOptions options) : base(options)
+        {
+        }
 
         public DbSet<Models.Phonebook> Phonebooks { get; set; }
        public DbSet<Contact> Contacts { get; set; }

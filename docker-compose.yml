@@ -21,8 +21,8 @@ services:
     build: 
       context: .
       dockerfile: Services/Report/Phonebook.Services.Report/Dockerfile
-  gateway.api:
-    image: gateway_api_image
+  gateway:
+    image: gateway_image
     build:
       context: .
       dockerfile: Gateways/Phonebook.Gateway/Dockerfile        

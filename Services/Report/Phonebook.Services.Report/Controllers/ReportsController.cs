@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Phonebook.Core.ControllerBases;
 using Phonebook.Services.Report.Services.Abstract;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Phonebook.Services.Report.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ReportsController : CustomBaseController

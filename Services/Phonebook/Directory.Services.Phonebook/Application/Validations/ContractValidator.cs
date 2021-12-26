@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using FluentValidation;
 using Phonebook.Services.Phonebook.Dtos.Contact;
 using Phonebook.Services.Phonebook.Enums;
 
 namespace Phonebook.Services.Phonebook.Application.Validations
 {
-
+    [ExcludeFromCodeCoverage]
     public class ContractCreateValidator : AbstractValidator<ContactCreateDto>
     {
 
@@ -37,7 +38,7 @@ namespace Phonebook.Services.Phonebook.Application.Validations
             });
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public class ContactInsertValidator : AbstractValidator<ContactInsertDto>
     {
         public ContactInsertValidator()
@@ -66,7 +67,7 @@ namespace Phonebook.Services.Phonebook.Application.Validations
             });
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public static class PrivateFunctions
     {
         public static bool IsPhoneNumber(string arg)
