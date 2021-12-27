@@ -53,7 +53,7 @@ Yapı 4 mikro servis , 2 veritabanı ve 1 mesaj dinleyiciden oluşmaktadır.
 
 Yapının genel şeması aşağıdaki gibidir.
 
-![](img/schema.png)
+![schema](https://user-images.githubusercontent.com/88135079/147427722-061c320f-8e99-4d27-aba5-66ef6c5a6dcd.PNG)
 
 ## Teknoloji ve Eklentiler 
 
@@ -77,15 +77,20 @@ Yapının genel şeması aşağıdaki gibidir.
 # Ekran Görünütüleri 
 
 ## Gateway
-![](img/Capture1.png)
+![Capture1](https://user-images.githubusercontent.com/88135079/147427777-859df46e-8464-403d-9c97-e727bea52340.PNG)
+
 
 ## RabbitMQ
-![](img/Capture2.png)
+![Capture2](https://user-images.githubusercontent.com/88135079/147427783-a8360838-2f54-451b-bd3b-27872ad8ebf7.PNG)
+
 
 ## Postgres
-![](img/Capture3.png)
+![Capture3](https://user-images.githubusercontent.com/88135079/147427791-0d52619c-4896-4928-90a5-14909d8424af.PNG)
+
 
 ## Covarage
-![](img/Capture4.png)
+![Capture4](https://user-images.githubusercontent.com/88135079/147427792-f4f83d80-5919-4b8b-9c68-4f79b5f1a2a3.PNG)
+
+
 
 
