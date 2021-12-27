@@ -33,7 +33,7 @@ Birden fazla mikroservis kullanarak basit bir rehber uygulaması geliştirilmesi
 |  phonebook/gateway |  5000 | localhost  |
 |  phonebook/phonebook | 5010  | localhost  |
 |  phonebook/report | 5020  | localhost  |
-|  phonebook/datacapture | 5201  | localhost  |
+|  phonebook/datacapture | 5099  | localhost  |
 |  rabbitmq | 15672  | localhost  |
 
 
