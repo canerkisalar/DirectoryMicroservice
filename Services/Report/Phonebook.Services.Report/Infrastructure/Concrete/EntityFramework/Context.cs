@@ -16,15 +16,12 @@ namespace Phonebook.Services.Report.Infrastructure.Concrete.EntityFramework
                 .AddEnvironmentVariables()
                 .Build();
 
-            optionsBuilder.UseNpgsql(config["ConnectionString"], npgsqlOptionsAction: o =>
-            {
-                o.MigrationsAssembly("report.api");
-            });
+            optionsBuilder.UseNpgsql(config["ConnectionString"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+           // client.Database.EnsureCreated();
         }
         public Context()
         {
