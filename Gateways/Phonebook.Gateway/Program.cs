@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 
 namespace Phonebook.Gateway
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static void Main(string[] args)

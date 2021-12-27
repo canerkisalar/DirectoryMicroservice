@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Phonebook.Core.ControllerBases;
@@ -8,6 +9,7 @@ using Phonebook.Services.Phonebook.Services.Abstract;
 
 namespace Phonebook.Services.Phonebook.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class PhonebooksController : CustomBaseController

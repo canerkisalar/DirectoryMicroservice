@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim as build
 WORKDIR /app
 EXPOSE 80
-COPY Shared/Directory.Core/*.csproj Shared/Directory.Core/
+COPY Shared/Phonebook.Core/*.csproj Shared/Phonebook.Core/
 COPY Services/Report/Phonebook.Services.Report/*.csproj Services/Report/Phonebook.Services.Report/
 RUN dotnet restore Services/Report/Phonebook.Services.Report/*.csproj
 COPY . .

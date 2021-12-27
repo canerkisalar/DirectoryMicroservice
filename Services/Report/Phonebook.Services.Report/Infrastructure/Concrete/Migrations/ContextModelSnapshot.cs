@@ -5,10 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Phonebook.Services.Report.Infrastructure.Concrete.EntityFramework;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Phonebook.Services.Report.Infrastructure.Concrete.Migrations
 {
     [DbContext(typeof(Context))]
+    [ExcludeFromCodeCoverage]
     partial class ContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

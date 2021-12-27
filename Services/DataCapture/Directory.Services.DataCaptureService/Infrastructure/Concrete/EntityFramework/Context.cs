@@ -10,21 +10,28 @@ namespace Phonebook.Services.DataCapture.Infrastructure.Concrete.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(System.IO.Directory.GetCurrentDirectory()))
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
+                        .SetBasePath(Path.Combine(System.IO.Directory.GetCurrentDirectory()))
+                        .AddJsonFile("appsettings.json")
+                        .AddEnvironmentVariables()
+                        .Build();
 
             optionsBuilder.UseNpgsql(config["ConnectionString"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
         }
 
-        public DbSet<Domain.Phonebook> Phonebooks { get; set; }
+        public Context()
+        {
+        }
 
-       public DbSet<Contact> Contacts { get; set; } 
+        public Context(DbContextOptions options) : base(options)
+        {
+        }
+
+
+        public DbSet<Domain.Phonebook> Phonebooks { get; set; }
+        public DbSet<Contact>          Contacts   { get; set; }
     }
 }

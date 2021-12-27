@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using Ocelot.Middleware;
 
 namespace Phonebook.Gateway
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.

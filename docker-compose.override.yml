@@ -54,8 +54,8 @@ services:
       - "5020:80"
     depends_on:
       - reportdb  
-  gateway.api:
-    container_name: gateway.api
+  gateway:
+    container_name: gateway
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - Services:phonebook:DownstreamPath=http://phonebook.api

@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Directory.Core\Phonebook.Core.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Phonebook.Core\Phonebook.Core.csproj" />
   </ItemGroup>
 
 </Project>

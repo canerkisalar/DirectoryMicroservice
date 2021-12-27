@@ -33,7 +33,7 @@ Birden fazla mikroservis kullanarak basit bir rehber uygulaması geliştirilmesi
 |  phonebook/gateway |  5000 | localhost  |
 |  phonebook/phonebook | 5010  | localhost  |
 |  phonebook/report | 5020  | localhost  |
-|  phonebook/datacapture | 5099  | localhost  |
+|  phonebook/datacapture | 5201  | localhost  |
 |  rabbitmq | 15672  | localhost  |
 
 
@@ -52,8 +52,8 @@ Yapı 4 mikro servis , 2 veritabanı ve 1 mesaj dinleyiciden oluşmaktadır.
     
 
 Yapının genel şeması aşağıdaki gibidir.
-
 ![schema](https://user-images.githubusercontent.com/88135079/147427722-061c320f-8e99-4d27-aba5-66ef6c5a6dcd.PNG)
+
 
 ## Teknoloji ve Eklentiler 
 
@@ -75,8 +75,6 @@ Yapının genel şeması aşağıdaki gibidir.
 - Moq
 
 # Ekran Görünütüleri 
-
-## Gateway
 ![Capture1](https://user-images.githubusercontent.com/88135079/147427777-859df46e-8464-403d-9c97-e727bea52340.PNG)
 
 
@@ -90,7 +88,6 @@ Yapının genel şeması aşağıdaki gibidir.
 
 ## Covarage
 ![Capture4](https://user-images.githubusercontent.com/88135079/147427792-f4f83d80-5919-4b8b-9c68-4f79b5f1a2a3.PNG)
-
 
 
 

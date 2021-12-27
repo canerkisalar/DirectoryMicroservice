@@ -11,23 +11,28 @@ namespace Phonebook.Services.Report.Infrastructure.Concrete.EntityFramework.Repo
 {
     public class EfReportHeadDal : EfEntityRepositoryBase<ReportHead,Context>,IReportHeadDal
     {
+        private  Context _ctx;
+       
+        public EfReportHeadDal(Context context) : base(context)
+        {
+            _ctx = context;
+        }
+        
         public async Task<ReportHead> UpdateReportStatusById(Guid reportId, ReportStatusTypes status)
         {
-            using (var context = new Context())
-            {
-               
-                var entity = await context.Set<ReportHead>().FindAsync(reportId);
+           
+                var entity = await _ctx.Set<ReportHead>().FindAsync(reportId);
                 entity.Status = status.ToString();
                 entity.PreparationDate = DateTime.MinValue;
                 if (status == ReportStatusTypes.Done)
                 {
                     entity.PreparationDate = DateTime.Now;
                 }
-                context.Entry(entity).State = EntityState.Modified;
-                await context.SaveChangesAsync();
+                _ctx.Entry(entity).State = EntityState.Modified;
+                await _ctx.SaveChangesAsync();
 
                 return entity;
-            }
+            
         }
     }
 }

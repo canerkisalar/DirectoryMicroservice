@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ using Phonebook.Services.Report.Services.Concrete;
 
 namespace Phonebook.Services.Report
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -50,10 +52,10 @@ namespace Phonebook.Services.Report
             services.AddMassTransitHostedService();
             //
             services.AddScoped<IReportService, ReportService>();
-            services.AddScoped<IReportHeadDal, EfReportHeadDal>();
-            services.AddScoped<IReportItemDal, EfReportItemDal>();
-            services.AddScoped<IPhonebookDal, EfPhonebookDal>();
-            services.AddScoped<IContactDal, EfContactDal>();
+            services.AddScoped<IReportHeadDal>(_=> new EfReportHeadDal(new Context()));
+            services.AddScoped<IReportItemDal>(_=> new EfReportItemDal(new Context()));
+            services.AddScoped<IPhonebookDal>(_=> new EfPhonebookDal(new Context()));
+            services.AddScoped<IContactDal>(_=> new EfContactDal(new Context()));
             // AutoMapper
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();

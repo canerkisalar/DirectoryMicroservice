@@ -12,7 +12,7 @@
       "UpstreamPathTemplate": "/services/report/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "UpstreamScheme": "http",
-      "ServiceName": "report.api",
+      "ServiceName": "report",
       "SwaggerKey": "report"
 
     }

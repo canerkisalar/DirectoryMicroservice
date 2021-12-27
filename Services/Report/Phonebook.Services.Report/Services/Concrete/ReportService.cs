@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Phonebook.Core.Domain.Enums;
-using Phonebook.Core.Messages;
 using Phonebook.Core.Messages.Report;
 using Phonebook.Services.Report.Dtos;
 using Phonebook.Services.Report.Dtos.Reports;
@@ -22,15 +19,15 @@ namespace Phonebook.Services.Report.Services.Concrete
 {
     public class ReportService : IReportService
     {
-        private readonly IPhonebookDal _phonebookDal;
+        
         private readonly IReportHeadDal _reportHeadDal;
         private readonly IReportItemDal _reportItemDal;
         private readonly ISendEndpointProvider _sendEndpointProvider;
         private readonly IMapper _mapper;
 
-        public ReportService(IPhonebookDal phonebookDal, IReportHeadDal reportHeadDal, IReportItemDal reportItemDal, ISendEndpointProvider sendEndpointProvider, IMapper mapper)
+        public ReportService( IReportHeadDal reportHeadDal, IReportItemDal reportItemDal, ISendEndpointProvider sendEndpointProvider, IMapper mapper)
         {
-            _phonebookDal = phonebookDal;
+           
             _reportHeadDal = reportHeadDal;
             _reportItemDal = reportItemDal;
             _sendEndpointProvider = sendEndpointProvider;
@@ -56,7 +53,7 @@ namespace Phonebook.Services.Report.Services.Concrete
 
                 if (getDataRequest.IsSuccessful)
                 {
-                    return Core.Domain.Dtos.Response<ReportHead>.Success(200);
+                    return Core.Domain.Dtos.Response<ReportHead>.Success(newReportRequest,200);
                 }
             }
             return Core.Domain.Dtos.Response<ReportHead>.Fail("Something goes wrong", 500);
@@ -99,7 +96,7 @@ namespace Phonebook.Services.Report.Services.Concrete
             return Core.Domain.Dtos.Response<GetAllPhonebooksMessageCommand>.Success(200);
         }
 
-        public async Task PrepLocationReport(AllPhonebooksMessageCommand context, SourceTypes sourceType, List<Models.Phonebook> dataFromDb = null)
+        public async Task PrepLocationReport(SourceTypes sourceType, AllPhonebooksMessageCommand context = null, List<Models.Phonebook> dataFromDb = null)
         {
 
             var phonebooks = new List<Models.Phonebook>();
@@ -123,9 +120,7 @@ namespace Phonebook.Services.Report.Services.Concrete
                 return;
             }
 
-
             var report = new List<LocationReportDto>();
-
 
             var distinctLocations = phonebooks.SelectMany(a => a.Contacts
                 .Where(c => c.ContactType == ContactTypes.Location.ToString())
@@ -140,12 +135,7 @@ namespace Phonebook.Services.Report.Services.Concrete
                 var phonebookIds = new List<Guid>();
                 if (location == "Undefined")
                 {
-                    //phonebookIds.AddRange(allData
-                    //    .Where(p => p.Contacts is not { Count: > 0 })
-                    //    .Select(p => p.PhonebookId)
-                    //    .Distinct()
-                    //    .ToList());
-
+            
                     phonebookIds.AddRange(phonebooks
                         .Where(p => !p.Contacts.Any(c => c.ContactType == ContactTypes.Location.ToString()))
                         .Select(p => p.PhonebookId)
@@ -169,15 +159,22 @@ namespace Phonebook.Services.Report.Services.Concrete
                 });
             });
 
-            await _reportHeadDal.UpdateReportStatusById(context.ReportId, ReportStatusTypes.Done);
-            await _reportItemDal.Add(new ReportItem()
+
+            if (report.Any(r => r.Location == "Undefined" && r.CountPerson == 0 && r.CountPhoneNumbers == 0))
             {
-                ReportHeadId = context.ReportId,
-                ReportItemId = Guid.NewGuid(),
-                Code = JsonConvert.SerializeObject(report)
-            });
+                report = report.Where(rx => rx.Location != "Undefined").ToList();
+            }
 
-
+            if (context != null)
+            {
+                await _reportHeadDal.UpdateReportStatusById(context.ReportId, ReportStatusTypes.Done);
+                await _reportItemDal.Add(new ReportItem()
+                {
+                    ReportHeadId = context.ReportId,
+                    ReportItemId = Guid.NewGuid(),
+                    Code = JsonConvert.SerializeObject(report)
+                });
+            }
         }
     }
 }

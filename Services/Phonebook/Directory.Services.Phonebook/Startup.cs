@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using MassTransit;
@@ -8,7 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Phonebook.Core.Repositories.MongoDb;
 using Phonebook.Services.Phonebook.Consumers;
+using Phonebook.Services.Phonebook.Infrastructure.Abstract;
+using Phonebook.Services.Phonebook.Infrastructure.Concrete.MongoDb;
 using Phonebook.Services.Phonebook.Services.Abstract;
 using Phonebook.Services.Phonebook.Services.Concrete;
 using Phonebook.Services.Phonebook.Settings.Abstract;
@@ -16,6 +20,8 @@ using Phonebook.Services.Phonebook.Settings.Concrete;
 
 namespace Phonebook.Services.Phonebook
 {
+
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -53,6 +59,11 @@ namespace Phonebook.Services.Phonebook
             services.AddAutoMapper(typeof(Startup));
             // Additional Services
             services.AddScoped<IPhonebookService, PhonebookService>();
+            services.AddScoped<IPhonebookDal>(dal => ActivatorUtilities.CreateInstance<MongoPhonebookDal>(dal, new MongoDbSettings()
+            {
+                Database = Configuration.GetSection("DatabaseSettings").GetSection("DatabaseName").Value,
+                ConnectionString = Configuration.GetSection("DatabaseSettings").GetSection("ConnectionString").Value
+            }));
             // options pattern 
             services.Configure<DatabaseSettings>(Configuration.GetSection("DatabaseSettings"));
             services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);

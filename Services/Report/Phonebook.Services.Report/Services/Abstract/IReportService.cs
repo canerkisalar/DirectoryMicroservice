@@ -22,6 +22,6 @@ namespace Phonebook.Services.Report.Services.Abstract
 
         Task<Response<GetAllPhonebooksMessageCommand>> GetBatchData(Guid reportId);
 
-        Task PrepLocationReport(AllPhonebooksMessageCommand context, SourceTypes sourceType, List<Models.Phonebook> dataFromDb = null);
+        Task PrepLocationReport( SourceTypes sourceType, AllPhonebooksMessageCommand context=null, List<Models.Phonebook> dataFromDb = null);
     }
 }
