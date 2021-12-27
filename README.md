@@ -7,7 +7,7 @@ Mikroservis mimarisi ile oluşturulmuş rehber uygulaması.
 Docker uygulamasının kurulu ve konfigürasyonu yapıldığına eminseniz , aşağıdaki kodu çalıştırarak `Phonebook Applicaton` uygulamasını hazır hale getirebilirsiz. 
 
 ```powershell
-docker-compose up --build
+docker-compose up 
 ```
 
 ## Seneryo
