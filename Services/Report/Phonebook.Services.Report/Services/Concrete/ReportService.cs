@@ -66,11 +66,16 @@ namespace Phonebook.Services.Report.Services.Concrete
 
             if (reportItem != null)
             {
+                var reportReady =await _reportHeadDal.Get(x => x.ReportHeadId == reportId);
+                if (reportReady.Status==ReportStatusTypes.Preparing.ToString())
+                {
+                    return Core.Domain.Dtos.Response<List<LocationReportDto>>.Fail("Report not ready ", 500);
+                }
                 locationReportDto = JsonConvert.DeserializeObject<List<LocationReportDto>>(reportItem.Code);
                 return Core.Domain.Dtos.Response<List<LocationReportDto>>.Success(locationReportDto, 200);
             }
 
-            return Core.Domain.Dtos.Response<List<LocationReportDto>>.Fail("Something goes wrong", 500);
+            return Core.Domain.Dtos.Response<List<LocationReportDto>>.Fail("Report not found ", 500);
         }
 
         public async Task<Core.Domain.Dtos.Response<List<ReportHeadDto>>> GetLocationReportList()

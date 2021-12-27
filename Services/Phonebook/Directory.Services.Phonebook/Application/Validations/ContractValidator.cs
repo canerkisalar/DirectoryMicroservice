@@ -34,7 +34,7 @@ namespace Phonebook.Services.Phonebook.Application.Validations
 
             When(x => x.ContactType == ContactTypes.Phone.ToString(), () =>
             {
-                RuleFor(x => x.ContactInformation).Must(PrivateFunctions.IsPhoneNumber).WithMessage("Wrong Phone Number ");
+                RuleFor(x => x.ContactInformation).Must(PrivateFunctions.IsPhoneNumber).WithMessage("Wrong Phone Number - Number must be 10 digits");
             });
         }
     }
@@ -63,7 +63,7 @@ namespace Phonebook.Services.Phonebook.Application.Validations
 
             When(x => x.ContactType == ContactTypes.Phone.ToString(), () =>
             {
-                RuleFor(x => x.ContactInformation).Must(PrivateFunctions.IsPhoneNumber).WithMessage("Wrong Phone Number ");
+                RuleFor(x => x.ContactInformation).Must(PrivateFunctions.IsPhoneNumber).WithMessage("Wrong Phone Number - Number must be 10 digits ");
             });
         }
     }
