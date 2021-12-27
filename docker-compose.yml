@@ -4,6 +4,7 @@ services:
     image: mongo
   reportdb:
     image: postgres
+    restart: always
   rabbitmq:
     image: rabbitmq:3.9.11-management
   phonebook.api:
@@ -28,5 +29,5 @@ services:
       dockerfile: Gateways/Phonebook.Gateway/Dockerfile        
 volumes:
   phonebookdb_volume:
-  reportdb_volume:
+  report_volume:
 

@@ -70,10 +70,12 @@ namespace Phonebook.Services.Report
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var client = new Context())
-            {
-                client.Database.EnsureCreated();
-            }
+                using (var client = new Context())
+                {
+                    client.Database.EnsureCreated();    
+                    //client.Database.Migrate();    
+                    
+                }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
