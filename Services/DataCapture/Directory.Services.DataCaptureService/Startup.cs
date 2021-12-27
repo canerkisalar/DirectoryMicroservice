@@ -59,8 +59,8 @@ namespace Phonebook.Services.DataCapture
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Directory.Services.DataCaptureService", Version = "v1" });
             });
 
-            services.AddScoped<IPhonebookDal,EfPhonebookDal>();
-            services.AddScoped<IContactDal, EfContactDal>();
+            services.AddScoped<IPhonebookDal>(_=>new EfPhonebookDal(new Context()));
+            services.AddScoped<IContactDal>(_=>new EfContactDal(new Context()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

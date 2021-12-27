@@ -51,7 +51,7 @@ namespace Phonebook.Services.Report.Tests
 
         private static GetAllPhonebooksMessageCommandConsumer GetHandler(Context db)
         {
-            var reportService = new ReportService(new EfPhonebookDal(db),new EfReportHeadDal(db),new EfReportItemDal(db),null,null);
+            var reportService = new ReportService(new EfReportHeadDal(db),new EfReportItemDal(db),null,null);
 
             var consumer = new GetAllPhonebooksMessageCommandConsumer(new EfReportHeadDal(db),new EfReportItemDal(db),reportService);
 

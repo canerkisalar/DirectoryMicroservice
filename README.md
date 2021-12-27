@@ -1,11 +1,10 @@
 # .NET Microservice Örnek Rehber Uygulaması
 
-Mikroservisler ve Docker Containerlarına dayalı .Net uygulama örneği .
-
+Mikroservis mimarisi ile oluşturulmuş rehber uygulaması.
 
 ## Başlarken
 
-Docker uygulamasının kurulu ve konfigürasyonu yapıldığına eminseniz , aşağıdaki kodu çalıştırarak `Phonebook App` uygulamasını hazır hale getirebilirsiz. 
+Docker uygulamasının kurulu ve konfigürasyonu yapıldığına eminseniz , aşağıdaki kodu çalıştırarak `Phonebook Applicaton` uygulamasını hazır hale getirebilirsiz. 
 
 ```powershell
 docker-compose up --build
@@ -15,15 +14,15 @@ docker-compose up --build
 
 Birden fazla mikroservis kullanarak basit bir rehber uygulaması geliştirilmesi.
 
-Rehberde kişi oluşturma
-Rehberde kişi kaldırma
-Rehberdeki kişiye iletişim bilgisi ekleme
-Rehberdeki kişiden iletişim bilgisi kaldırma
-Rehberdeki kişilerin listelenmesi
-Rehberdeki bir kişiyle ilgili iletişim bilgilerinin de yer aldığı detay bilgilerin getirilmesi
-Rehberdeki kişilerin bulundukları konuma göre istatistiklerini çıkartan bir rapor talebi
-Sistemin oluşturduğu raporların listelenmesi
-Sistemin oluşturduğu bir raporun detay bilgilerinin getirilmesi
+- Rehberde kişi oluşturma
+- Rehberde kişi kaldırma
+- Rehberdeki kişiye iletişim bilgisi ekleme
+- Rehberdeki kişiden iletişim bilgisi kaldırma
+- Rehberdeki kişilerin listelenmesi
+- Rehberdeki bir kişiyle ilgili iletişim bilgilerinin de yer aldığı detay bilgilerin getirilmesi
+- Rehberdeki kişilerin bulundukları konuma göre istatistiklerini çıkartan bir rapor talebi
+- Sistemin oluşturduğu raporların listelenmesi
+- Sistemin oluşturduğu bir raporun detay bilgilerinin getirilmesi
 
 
 
@@ -40,36 +39,53 @@ Sistemin oluşturduğu bir raporun detay bilgilerinin getirilmesi
 
 ## Yapının Özeti 
 
-Mikroservisleri tek endpoint'ten yönetebilmek için Ocelot eklentisi ile beraber bir adet  `Gateway` oluşturuldu.  
-Mikroservislerin birbirleri arasındaki iletişimin asenkron ve düzenli olabilmesi için  `RabbitMQ` kullanıldı.
-Rehbere ait Ekleme/Silme vb. işlemlerinin yapıldığı ve kendisine ait veritabanı `MongoDB` olan Phonebook mikroservisi oluşturuldu.
-Rapolama işlemlerinin yapıldığı ve kendisine ait veritabanı (`Postgre`) olan Report mikroservisi oluşturuldu.
 
-Rehbere bir kayıt eklendiğinde,silindiğinde ya da düzeltildiğinde  `Phonebook` mikroservisinde o kayıt `MongoDB` veritabanına eklenir ve `RabbitMQ` kullanılarak `Phonebook` mikroservisinden `DataCapture` mikroservisine mesaj gönderilir.Gelen mesajlar kuyruk sistemine göre tek tek işlenerek Rapor veritabanına yazılır . 
+Yapı 4 mikro servis , 2 veritabanı ve 1 mesaj dinleyiciden oluşmaktadır. 
 
-**Rapor Senaryosu**
-1. **DataCapture mikroservisi entity operasyonlarını yakalayarak Rapor Servisi için oluşturulan (Postgre) veritabanına kaydeder.** Böylelikle Rapor istenildiğinde Rapor mikroservisi kendisine ait olan database 'den verileri çekip rapor oluşturur. Diğer mikroservisle ya da diğer mikroservisin veritabanını erişmek durumunda kalmaz .
-2. Rapor mikro servisinden bir rapor istenildiğinde , servis asenkron olarak Rehber servisine bir mesaj göndererek verileri ister , veriler hazırlanıp geldiğinde ilgili verilerden raporu oluşturup kendi veritabnına kaydederek işlemi tamamlar .
+1. İlk mikro servisimiz **Gateway** 'dir . Yük dengelenmesi, kimlik doğrulama ya da yetkilendirme , diğer bütün mikroservisleri ortak bir yerden yönetimi için kullanılabilir. 
 
+2.  Kişilerin rehbere eklenmesi , silinmesi , güncellenmesi vb. işlemleri yapan mikroservisimiz **Phonebook** dir.
 
-![](img/microservice-architecture.png)
+3.  Raporların listelenmesi , raporların detay bilgilerinin getirilmesi , içerideki veriler doğrultusunda raporların hazırlamakla yükümlü olan   mikroservisimiz **Report** dir.
 
-## Tech Stack
+4.  Raporlama servisi için **Phonebook** mikro servisinin gönderdiği mesajları dinleyip , ilgili kayıtları rapor servisinin veritabanına yazan servisimiz **DataCapture** dir.
+    
+
+Yapının genel şeması aşağıdaki gibidir.
+
+![](img/schema.png)
+
+## Teknoloji ve Eklentiler 
 
 - .Net 5
 - RabbitMQ
-- Serilog & Seq 
-- Redis
+- MassTransit
 - Event Source
 - CQRS && DDD
-- MediaTR
-- ReactJS
-- İdentity Server
 - Docker
 - Ocelot
 - PostgreSQL
+- MongoDB
 - Entity Framework Core
-- Ant Design
+- Entity Framework Core In-Memory DB
 - Portainer
+- Fluent Validation
+- AutoMapper
+- Fluent Assertions
+- Moq
+
+# Ekran Görünütüleri 
+
+## Gateway
+![](img/Capture1.png)
+
+## RabbitMQ
+![](img/Capture2.png)
+
+## Postgres
+![](img/Capture3.png)
+
+## Covarage
+![](img/Capture4.png)
 
 

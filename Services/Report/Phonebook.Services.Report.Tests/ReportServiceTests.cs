@@ -83,7 +83,7 @@ namespace Phonebook.Services.Report.Tests
            
             EndpointConvention.Map<TestMessage>(new Uri("http://random"));
 
-            var reportService = new ReportService(new EfPhonebookDal(db), new EfReportHeadDal(db), new EfReportItemDal(db), SendEndpointFactory.GetSendEndpoint().Object, AutoMapperConfiguration.SetMapper());
+            var reportService = new ReportService( new EfReportHeadDal(db), new EfReportItemDal(db), SendEndpointFactory.GetSendEndpoint().Object, AutoMapperConfiguration.SetMapper());
 
             return reportService;
         }

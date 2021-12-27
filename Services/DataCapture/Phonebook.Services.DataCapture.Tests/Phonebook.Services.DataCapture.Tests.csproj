@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\Directory.Core\Phonebook.Core.csproj" />
+      <ProjectReference Include="..\..\..\Shared\Phonebook.Core\Phonebook.Core.csproj" />
       <ProjectReference Include="..\Directory.Services.DataCaptureService\Phonebook.Services.DataCapture.csproj" />
     </ItemGroup>
 
