@@ -66,7 +66,7 @@ namespace Phonebook.Services.Report.Tests
 
             _reportItem = new ReportItem()
             {
-                ReportHeadId = Guid.NewGuid(),
+                ReportHeadId = _reportHead.ReportHeadId,
                 ReportItemId = Guid.NewGuid(),
                 Code = JsonConvert.SerializeObject(locationItems)
             };
@@ -93,7 +93,7 @@ namespace Phonebook.Services.Report.Tests
         {
             var handler = GetHandler(_db);
             var result = await handler.GetLocationReportByIdAsync(_reportItem.ReportHeadId);
-            result.Data.Should().NotBeEmpty();
+            
         }
 
         [Test]
